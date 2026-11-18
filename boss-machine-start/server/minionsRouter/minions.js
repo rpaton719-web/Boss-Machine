@@ -46,6 +46,7 @@ minionsRouter.get("/:minionId", (req, res, next) => {
 // update a single minion by id
 minionsRouter.put("/:minionId", (req, res, next) => {
   const minionUpdate = req.body;
+  minionUpdate.id = req.params.minionId;
   const updatedMinion = updateInstanceInDatabase("minions", minionUpdate);
   if (updatedMinion) {
     res.status(200).send(updatedMinion);
