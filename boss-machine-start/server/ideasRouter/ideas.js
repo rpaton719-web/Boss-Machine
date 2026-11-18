@@ -1,4 +1,11 @@
 const express = require("express");
+const {
+  getAllFromDatabase,
+  addToDatabase,
+  getFromDatabaseById,
+  updateInstanceInDatabase,
+  deleteFromDatabasebyId,
+} = require("../db");
 
 // create router
 const ideasRouter = express.Router();
