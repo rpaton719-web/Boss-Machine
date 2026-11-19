@@ -3,6 +3,7 @@ const {
   createMeeting,
   addToDatabase,
   deleteAllFromDatabase,
+  getAllFromDatabase,
 } = require("../db");
 
 // create router

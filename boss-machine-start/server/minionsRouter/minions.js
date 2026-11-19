@@ -26,11 +26,14 @@ minionsRouter.get("/", (req, res, next) => {
 // add new minion to database
 minionsRouter.post("/", (req, res, next) => {
   const newMinion = req.body;
+  const salary = Number(newMinion.salary);
   if (
-    newMinion.name &&
-    newMinion.title &&
-    typeof newMinion.salary === "number"
+    newMinion.hasOwnProperty("name") &&
+    newMinion.hasOwnProperty("title") &&
+    newMinion.hasOwnProperty("salary") &&
+    !isNaN(salary)
   ) {
+    newMinion.salary = salary;
     const createdMinion = addToDatabase("minions", newMinion);
     res.status(201).send(createdMinion);
   } else {

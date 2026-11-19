@@ -8,19 +8,24 @@ const {
 } = require("../db");
 
 // create router
-const workRouter = express.Router();
+const workRouter = express.Router({ mergeParams: true });
 
 // set up routes
 
 // get all work for given minion
 workRouter.get("/", (req, res, next) => {
   const minionId = req.params.minionId;
-  const allWork = getAllFromDatabase("work");
-  const filteredWork = allWork.filter((work) => work.minionId === minionId);
-  res.send(filteredWork);
+  const minionExists = getFromDatabaseById("minions", minionId);
+  if (minionExists) {
+    const allWork = getAllFromDatabase("work");
+    const filteredWork = allWork.filter((work) => work.minionId === minionId);
+    res.send(filteredWork);
+  } else {
+    res.status(404).send();
+  }
 });
 
-// create new work object for givern minion
+// create new work object for given minion
 workRouter.post("/", (req, res, next) => {
   const newWork = req.body;
   newWork.minionId = req.params.minionId;

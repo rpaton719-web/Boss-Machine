@@ -6,6 +6,7 @@ const {
   updateInstanceInDatabase,
   deleteFromDatabasebyId,
 } = require("../db");
+const checkMillionDollarIdea = require("../checkMillionDollarIdea");
 
 // create router
 const ideasRouter = express.Router();
@@ -18,14 +19,20 @@ ideasRouter.get("/", (req, res, next) => {
 });
 
 // add new idea to database
-ideasRouter.post("/", (req, res, next) => {
+ideasRouter.post("/", checkMillionDollarIdea, (req, res, next) => {
   const newIdea = req.body;
+  const numWeeks = Number(newIdea.numWeeks);
+  const weeklyRevenue = Number(newIdea.weeklyRevenue);
   if (
-    newIdea.name &&
-    newIdea.description &&
-    typeof newIdea.numWeeks === "number" &&
-    typeof newIdea.weeklyRevenue === "number"
+    newIdea.hasOwnProperty("name") &&
+    newIdea.hasOwnProperty("description") &&
+    newIdea.hasOwnProperty("numWeeks") &&
+    newIdea.hasOwnProperty("weeklyRevenue") &&
+    !isNaN(numWeeks) &&
+    !isNaN(weeklyRevenue)
   ) {
+    newIdea.numWeeks = numWeeks;
+    newIdea.weeklyRevenue = weeklyRevenue;
     const createdIdea = addToDatabase("ideas", newIdea);
     res.status(201).send(createdIdea);
   } else {
