@@ -7,8 +7,14 @@ const {
   deleteFromDatabasebyId,
 } = require("../db");
 
+// import work router for minions
+const workRouter = require("../workRouter/work");
+
 // create router
 const minionsRouter = express.Router();
+
+// mount work router to minions router
+minionsRouter.use("/:minionId/work", workRouter);
 
 // set up routes
 
