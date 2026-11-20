@@ -28,13 +28,16 @@ workRouter.get("/", (req, res, next) => {
 // create new work object for given minion
 workRouter.post("/", (req, res, next) => {
   const newWork = req.body;
+  const hours = Number(newWork.hours);
   newWork.minionId = req.params.minionId;
   if (
-    newWork.title &&
-    newWork.description &&
-    typeof newWork.hours === "number" &&
-    newWork.minionId
+    newWork.hasOwnProperty("title") &&
+    newWork.hasOwnProperty("description") &&
+    newWork.hasOwnProperty("hours") &&
+    newWork.hasOwnProperty("minionId") &&
+    !isNaN(hours)
   ) {
+    newWork.hours = hours;
     const createdWork = addToDatabase("work", newWork);
     res.status(201).send(createdWork);
   } else {
@@ -44,13 +47,17 @@ workRouter.post("/", (req, res, next) => {
 
 // update a single work object by id
 workRouter.put("/:workId", (req, res, next) => {
+  const workId = req.params.workId;
+  const workExists = getFromDatabaseById("work", workId);
   const workUpdate = req.body;
-  if (workUpdate.minionId === req.params.minionId) {
-    const updatedWork = updateInstanceInDatabase("work", workUpdate);
-    if (updatedWork) {
+
+  if (workExists) {
+    if (workUpdate.minionId === req.params.minionId) {
+      workUpdate.id = workId;
+      const updatedWork = updateInstanceInDatabase("work", workUpdate);
       res.status(200).send(updatedWork);
     } else {
-      res.status(404).send();
+      res.status(400).send();
     }
   } else {
     res.status(404).send();
